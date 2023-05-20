@@ -10,5 +10,8 @@
     "nodemailer": "^6.9.1",
     "path": "^0.12.7",
     "validator": "^13.9.0"
+  },
+  "scripts": {
+    "start": "node server.js"
   }
 }
