@@ -25,12 +25,13 @@ app.use("/avatars", express.static("avatars"))
 
 
 // server 
+const PORT = process.env.PORT || 8000
 const startServer = async () => {
   try {
     connectDB(process.env.DB_LINK);
     console.clear();
-    console.log("listening")
-    app.listen(8000)
+    console.log("listening on" + PORT)
+    app.listen(PORT)
   } catch (err) {
     console.log(err)
   }
