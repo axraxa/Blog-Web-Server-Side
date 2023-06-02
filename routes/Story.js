@@ -8,9 +8,6 @@ const jwt = require("jsonwebtoken");
 const { upload, multer } = require("../controllers/multer");
 
 
-
-
-
 //Get Requests
 router.get("/posts", async (req, res) => {
   try {
@@ -82,7 +79,7 @@ router.get("/UsersPosts/:id&:quantity", (req, res) => {
   jwt.verify(token, process.env.TOKEN_KEY, async function(err, decoded) {
     if (err) return res.json({ msg: err })
     const user = await User.findById(id).populate("stories").sort({ "stories.createdAt": - 1 }).skip(10 * quantity).limit(10);
-    if (!user) res.json({ msg: "There is no user like that" })
+    if (!user) return res.json({ msg: "There is no user like that" })
     return res.json({ user })
   })
 })
