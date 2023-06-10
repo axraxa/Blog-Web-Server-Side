@@ -15,11 +15,14 @@ const userSchema = new Schema({
     unique: true,
   }, password: {
     type: String,
-    required: true,
+    required: function() {
+      return !this.isOauthUser
+    },
   },
   stories: [{ type: Schema.Types.ObjectId, ref: "Story" }],
   likedStories: [{ type: Schema.Types.ObjectId, ref: "Story" }],
-  path: { type: String, default: "avatars/default.png" }
+  path: { type: String, default: "avatars/default.png" },
+  isOauthUser: { type: Boolean, default: false }
 })
 //encrypting password.
 userSchema.pre("save", function(next) {

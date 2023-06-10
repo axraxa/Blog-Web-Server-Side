@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const fs = require("fs");
 const path = require("path")
+const passport = require("../controllers/passport")
 const { multer, uploadAvatar } = require("../controllers/multer")
 
 router.post("/login", async (req, res) => {
@@ -27,7 +28,25 @@ router.post("/login", async (req, res) => {
     return res.json({ msg: err })
   }
 })
-
+//google authentication
+router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"], prompt: 'consent' }))
+router.get(
+  '/auth/google/callback',
+  (req, res, next) => {
+    passport.authenticate('google', (err, data) => {
+      if (err) {
+        return res.redirect(`/failure`);
+      }
+      if (data.successRedirect) {
+        return res.redirect(data.successRedirect);
+      }
+      if (data.failureRedirect) {
+        return res.redirect(data.failureRedirect);
+      }
+      return res.redirect('http:/localhost:5173/failure');
+    }
+    )(req, res, next);
+  });
 router.post("/register", async (req, res) => {
   try {
     const { mail, password, username } = req.body;

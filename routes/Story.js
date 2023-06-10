@@ -28,7 +28,7 @@ router.get("/posts", async (req, res) => {
       return res.json({ msg: "There is no story." });
     });
   } catch (err) {
-    res.json({ msg: err });
+    return res.json({ msg: err });
   }
 });
 router.get("/posts/:page", async (req, res) => {
@@ -42,18 +42,16 @@ router.get("/posts/:page", async (req, res) => {
         .skip(10 * page)
         .limit(10)
         .populate("author");
-      console.log(stories)
       if (stories) return res.json({ stories });
       return res.json({ msg: "There is no story." });
     });
   } catch (err) {
-    res.json({ msg: err });
+    return res.json({ msg: err });
   }
 });
 router.get("/postsSearch/:search&:quantity", (req, res) => {
   const token = req.headers.authorization;
   const { search, quantity } = req.params;
-  console.log(search, quantity)
   jwt.verify(token, process.env.TOKEN_KEY, async function(err, decoded) {
     if (err) return res.json({ msg: err })
     const posts = await Story.find({ name: { $regex: search } }).populate("author")
@@ -121,7 +119,7 @@ router.post("/create", async (req, res) => {
       });
     });
   } catch (err) {
-    res.send(err);
+    return res.send(err);
   }
 });
 
@@ -200,7 +198,7 @@ router.patch("/imageUpdate/:id", async (req, res) => {
       }
     );
   } catch (err) {
-    res.json({ msg: err });
+    return res.json({ msg: err });
   }
 });
 
@@ -230,7 +228,6 @@ router.delete("/deleteComment/:postId&:id", (req, res) => {
     if (err) return res.json({ msg: err })
     const post = await Story.findById(postId).populate("author").populate("comments.author");
     const comment = post.comments.filter(each => each._id == id);
-    console.log(comment)
     if (comment[0].author._id == decoded.user._id || post.author._id == decoded.user._id) {
       const updatedComments = post.comments.filter(each => each._id != id)
       post.comments = updatedComments;
@@ -253,7 +250,7 @@ router.delete("/delete/:id", (req, res) => {
       return res.json();
     });
   } catch (err) {
-    res.json({ msg: err });
+    return res.json({ msg: err });
   }
 });
 module.exports = router;
