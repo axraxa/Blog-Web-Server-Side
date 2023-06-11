@@ -12,6 +12,7 @@ router.post("/login", async (req, res) => {
     const { mail, password } = req.body;
     const user = await User.findOne({ mail: mail })
     if (!user) return res.json({ msg: "Email is not registered." })
+    if (user.isOauthUser) return res.json({ msg: "This mail is registered with google" })
     bcrypt.compare(password, user.password, function(err, result) {
       if (err) return res.send(err)
       if (result) {
